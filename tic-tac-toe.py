@@ -7,4 +7,4 @@
 #
 
 if __name__ == "__main__":
-    print(f"hello tic-tac-toe!\n", end="")
+    print("hello tic-tac-toe!\n", end="")
