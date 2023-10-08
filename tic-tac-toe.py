@@ -41,26 +41,33 @@ class Board:
 
     def set(self, row: int, col: int, marker: Marker):
         """put the marker in the spot unless its already been taken """
-        assert self.grid[row][col] is None, "someone already claimed this spot"
-        theRow = self.grid[row]
-        theRow[col] = marker
+        if not self.grid[row][col] is None:
+            raise ValueError(f"{marker}'s selected spot {row} {col} is already taken")
+        self.grid[row][col] = marker
 
     def takeTurn(self, playerMarker):
         """gather input from the player and add it to the board """
         row = -1
         col = -1
-        while not(self.validate(row) and self.validate(col)):
-            row, col = [int(a) for a in
-                        input(f"Enter the row and col for {playerMarker}'s turn: ").split()]
-            if self.validate(row) and self.validate(col):
+        while True:
+            row, col = [int(a) for a in input(f"Enter the row and col for {playerMarker}'s turn: ").split()]
+            try:
+                self.validate(row)
+                self.validate(col)
                 self.set(row, col, playerMarker)
                 break
+            except ValueError as ve:
+                print(f"{ve.args}, try again")
 
     def validate(self, index):
         """
         validate the index is in range
         """
+        if not (index >= 0 and index < self.gridSize):
+            raise ValueError(f"{index} is not between 0 and {self.gridSize - 1}")
+
         return index >= 0 and index < self.gridSize
+
 
 def main():
     player1 = Marker("X")
