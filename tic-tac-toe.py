@@ -62,6 +62,17 @@ class Board:
         """
         return index >= 0 and index < self.gridSize
 
+def main():
+    player1 = Marker("X")
+    player2 = Marker("O")
+    board = Board()
+
+    board.takeTurn(player1)
+    print(board)
+
+    board.takeTurn(player2)
+    print(board)
+
 
 if __name__ == "__main__":
-    print("hello tic-tac-toe!\n", end="")
+    main()
