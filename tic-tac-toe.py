@@ -45,7 +45,7 @@ class Board:
             raise ValueError(f"{marker}'s selected spot {row} {col} is already taken")
         self.grid[row][col] = marker
 
-    def takeTurn(self, playerMarker):
+    def recordTurn(self, playerMarker):
         """gather input from the player and add it to the board """
         row = -1
         col = -1
@@ -74,10 +74,10 @@ def main():
     player2 = Marker("O")
     board = Board()
 
-    board.takeTurn(player1)
+    board.recordTurn(player1)
     print(board)
 
-    board.takeTurn(player2)
+    board.recordTurn(player2)
     print(board)
 
 
