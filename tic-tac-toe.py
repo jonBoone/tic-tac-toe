@@ -28,11 +28,12 @@ class Board:
         self.gridSize = 3
         self.grid = [[None for _ in range(self.gridSize)] for _ in range(self.gridSize)]
         self.players = [player1, player2]
-        self.potentialWins = { 0: "Top Row", 1: "Middle Row", 2: "Bottom Row",
-                               3: "Left Column", 4: "Middle Column", 5: "Right Column",
-                               6: "Diagonal (Top Left to Bottom Right",
-                               7: "Diagonal (Bottom Left to Upper Right)"
-                              }
+        self.winDescriptions = { 0: "Top Row", 1: "Middle Row",
+                                 2: "Bottom Row", 3: "Left Column",
+                                 4: "Middle Column", 5: "Right Column",
+                                 6: "Diagonal (Top Left to Bottom Right",
+                                 7: "Diagonal (Bottom Left to Upper Right)"
+                                }
 
     def __str__(self):
         """Ensure we print out the grid contents as desired"""
@@ -95,7 +96,7 @@ class Board:
 
         for testCase in range(len(potentialWins)):
             if self._compareLists_(win, potentialWins[testCase]):
-                return (True, self.potentialWins[testCase])
+                return (True, self.winDescriptions[testCase])
 
         return (False, None)
 
@@ -105,7 +106,8 @@ class Board:
         row = -1
         col = -1
         while True:
-            row, col = [int(a) for a in input(f"Enter the row and col for {player}'s turn: ").split()]
+            row, col = [int(a) for a in
+                        input(f"Enter the row and col for {player}'s turn: ").split()]
             try:
                 self._validate_(row)
                 self._validate_(col)
@@ -113,8 +115,6 @@ class Board:
                 break
             except ValueError as ve:
                 print(f"{ve.args}, try again")
-
-
 
 
 def main():
