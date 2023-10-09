@@ -6,6 +6,21 @@
 # Author: Jon Boone <ipmonger@delamancha.org>
 #
 
+import re
+
+class Marker:
+    """The marker for a particular player """
+
+    def __init__(self, symbol: str):
+        self.symbol = symbol
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        return str(self.symbol)
+
+
 class Board:
     """ Tic-Tac-Toe Board"""
 
@@ -93,7 +108,7 @@ class Board:
         col = -1
         while True:
             row, col = [int(a) for a in
-                        input(f"Enter the row and col for {player}'s turn: ").split()]
+                        input(f"Enter the row (0-2) and col (0-2) for {player}'s turn: ").split()]
             try:
                 self._validate_(row)
                 self._validate_(col)
@@ -103,48 +118,72 @@ class Board:
                 print(f"{ve.args}, try again")
 
 
-class Marker:
-    """The marker for a particular player """
-
-    def __init__(self, symbol: str):
-        self.symbol = symbol
-
-    def __repr__(self):
-        return self.__str__()
-
-    def __str__(self):
-        return str(self.symbol)
-
-
 class Game:
     """An instance of this class represents a single game of Tic-Tac-Toe """
 
-    def __init__(self,board: Board, index=0):
-        self.board = board
-        self.players = board.players
-        self.index = index
+    def __init__(self, player1, player2, gameNumber=0):
+        self.board = Board(player1, player2)
+        self.gameNumber = gameNumber
+        self.players = [player1, player2]
+        self.maxTurns = 9
+        self.nextTurn = 0
+
+    def _reportDraw(self):
+        print(f"It's a draw - neither {self.players[0]} nor {self.players[1]} wins!")
+
+    def _reportWin(self, player, winType):
+        print(f"{player} wins along the {winType}!!!!!")
 
 
+    def _takeTurn(self):
+        player = self.players[self.nextTurn % 2]
+        self.board.recordTurn(player)
+        print(f"\n{self.board}\n")
+        self.nextTurn += 1
+        return (self.board.checkWin(player), player)
+
+    def _welcome_(self):
+        print(f"Starting a new game {self.players[0]} v {self.players[1]}: ",end="")
+        print(f"{self.players[0]} goes first!\n")
+
+    def alternateTurns(self):
+        won = False
+        while self.nextTurn < self.maxTurns:
+            (won, winType), player = self._takeTurn()
+            if won:
+                self._reportWin(player, winType)
+                break
+        if not (won):
+            self._reportDraw()
+        print("\n\n")
+
+    def begin(self):
+        self._welcome_()
+        print(f"{self.board}\n")
 
 
+def confirm():
+    response = False
+    confirmRE = re.compile("^([yY]|[yY][eE][sS])$")
+    another = input(f"Would you like to play again?")
+    if confirmRE.match(another) is not None:
+        response = True
+    return response
 
 
 def main():
     player1 = Marker("X")
     player2 = Marker("O")
-    board = Board(player1, player2)
+    gameNum = 0
+    another = False
 
-    board.recordTurn(player1)
-    print(board)
-    won, typeOfWin = board.checkWin(player1)
-    if won:
-        print(f"{player1} wins {typeOfWin}!!!!!")
+    while not another:
+        game = Game(player1, player2, gameNum)
+        game.begin()
+        game.alternateTurns()
+        another = confirm()
 
-    board.recordTurn(player2)
-    print(board)
-    won, typeOfWin = board.checkWin(player2)
-    if won:
-        print(f"{player2} wins {typeOfWin}!!!!!!")
+
 
 
 if __name__ == "__main__":
