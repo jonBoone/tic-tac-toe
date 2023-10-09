@@ -23,10 +23,16 @@ class Marker:
 class Board:
     """ Tic-Tac-Toe Board"""
 
-    def __init__(self):
+    def __init__(self, player1, player2):
         """ defines the instance data members"""
         self.gridSize = 3
         self.grid = [[None for _ in range(self.gridSize)] for _ in range(self.gridSize)]
+        self.players = [player1, player2]
+        self.potentialWins = { 0: "Top Row", 1: "Middle Row", 2: "Bottom Row",
+                               3: "Left Column", 4: "Middle Column", 5: "Right Column",
+                               6: "Diagonal (Top Left to Bottom Right",
+                               7: "Diagonal (Bottom Left to Upper Right)"
+                              }
 
     def __str__(self):
         """Ensure we print out the grid contents as desired"""
@@ -44,60 +50,34 @@ class Board:
                 outStr += '-----\n'
         return outStr
 
-    def checkWin(self, marker):
-        """check the board to see if anyone has won """
-        win = [f"{marker}", f"{marker}", f"{marker}"]
-
-        possibleWins = self.generatePossibleWins(marker)
-
-        for testCase in range(len(possibleWins)):
-            print(f"comparing {win} to {possibleWins[testCase]} \
-            (posibleWins{testCase})")
-
-            if self.compare(win, possibleWins[testCase]):
-                return (True, testCase)
-
-        return (False, None)
-
-    def compare(self, win, possibleWin):
+    def _compareLists_(self, win, possibleWin):
         return win == possibleWin
 
 
-    def generatePossibleWins(self, marker):
-        possibleWins = []
+    def _generatePotentialWins_(self):
+        potentials = []
         #rows
-        [possibleWins.append([self.grid[row][col] for col in range(self.gridSize)])
-                             for row in range(self.gridSize)]
+        [potentials.append([self.grid[row][col] for col in range(self.gridSize)])
+         for row in range(self.gridSize)]
         #cols
-        [possibleWins.append([self.grid[row][col] for row in range(self.gridSize)])
-                             for col in range(self.gridSize)]
+        [potentials.append([self.grid[row][col] for row in range(self.gridSize)])
+         for col in range(self.gridSize)]
         #diagLtoR
-        possibleWins.append([self.grid[0][0], self.grid[1][1], self.grid[2][2]])
+        potentials.append([self.grid[0][0], self.grid[1][1], self.grid[2][2]])
         #diagRtoL
-        possibleWins.append([self.grid[0][2], self.grid[1][1], self.grid[2][0]])
-        return possibleWins
+        potentials.append([self.grid[0][2], self.grid[1][1], self.grid[2][0]])
 
-    def recordTurn(self, playerMarker):
-        """gather input from the player and add it to the board """
-        row = -1
-        col = -1
-        while True:
-            row, col = [int(a) for a in input(f"Enter the row and col for {playerMarker}'s turn: ").split()]
-            try:
-                self.validate(row)
-                self.validate(col)
-                self.set(row, col, playerMarker)
-                break
-            except ValueError as ve:
-                print(f"{ve.args}, try again")
+        return potentials
 
-    def set(self, row: int, col: int, marker: Marker):
-        """put the marker in the spot unless its already been taken """
+
+    def _setRowCol_(self, row: int, col: int, player: Marker):
+        """put the player's symbol in the spot unless its already been taken """
         if not self.grid[row][col] is None:
-            raise ValueError(f"{marker}'s selected spot {row} {col} is already taken")
-        self.grid[row][col] = str(marker)
+            raise ValueError(f"{player}'s selected spot {row} {col} is already taken")
+        self.grid[row][col] = str(player)
 
-    def validate(self, index):
+
+    def _validate_(self, index):
         """
         validate the index is in range
         """
@@ -107,25 +87,56 @@ class Board:
         return index >= 0 and index < self.gridSize
 
 
+    def checkWin(self, player):
+        """check the board to see if anyone has won """
+        win = [f"{player}", f"{player}", f"{player}"]
+
+        potentialWins = self._generatePotentialWins_()
+
+        for testCase in range(len(potentialWins)):
+            if self._compareLists_(win, potentialWins[testCase]):
+                return (True, self.potentialWins[testCase])
+
+        return (False, None)
+
+
+    def recordTurn(self, player):
+        """gather input from the player and add it to the board """
+        row = -1
+        col = -1
+        while True:
+            row, col = [int(a) for a in input(f"Enter the row and col for {player}'s turn: ").split()]
+            try:
+                self._validate_(row)
+                self._validate_(col)
+                self._setRowCol_(row, col, player)
+                break
+            except ValueError as ve:
+                print(f"{ve.args}, try again")
+
+
+
 
 def main():
     player1 = Marker("X")
     player2 = Marker("O")
-    board = Board()
+    board = Board(player1, player2)
 
     board.recordTurn(player1)
     print(board)
-    if board.checkWin(player1):
-        print(f"{player1.symbol} wins!!!!!")
+    won, typeOfWin = board.checkWin(player1)
+    if won:
+        print(f"{player1} wins {typeOfWin}!!!!!")
 
     board.recordTurn(player2)
     print(board)
-    if board.checkWin(player2):
-        print(f"{player2.symbol} wins!!!!!!")
+    won, typeOfWin = board.checkWin(player2)
+    if won:
+        print(f"{player2} wins {typeOfWin}!!!!!!")
 
 
 if __name__ == "__main__":
     main()
-    myBoard = Board()
     player1 = Marker("λ")
     player2 = Marker("𝞴")
+    myBoard = Board(player1, player2)
