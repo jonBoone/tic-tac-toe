@@ -48,11 +48,11 @@ class Board:
         win = [f"{marker}", f"{marker}", f"{marker}"]
         possibleWins = []
         #rows
-        possibleWins.append([[self.grid[row][col] for col in range(self.gridSize)]
-                             for row in range(self.gridSize)])
+        [possibleWins.append([self.grid[row][col] for col in range(self.gridSize)])
+                             for row in range(self.gridSize)]
         #cols
-        possibleWins.append([[self.grid[row][col] for row in range(self.gridSize)]
-                             for col in range(self.gridSize)])
+        [possibleWins.append([self.grid[row][col] for row in range(self.gridSize)])
+                             for col in range(self.gridSize)]
         #diagLtoR
         possibleWins.append([self.grid[0][0], self.grid[1][1], self.grid[2][2]])
         #diagRtoL
