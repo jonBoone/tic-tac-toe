@@ -6,20 +6,6 @@
 # Author: Jon Boone <ipmonger@delamancha.org>
 #
 
-
-class Marker:
-    """The marker for a particular player """
-
-    def __init__(self, symbol: str):
-        self.symbol = symbol
-
-    def __repr__(self):
-        return self.__str__()
-
-    def __str__(self):
-        return str(self.symbol)
-
-
 class Board:
     """ Tic-Tac-Toe Board"""
 
@@ -115,6 +101,32 @@ class Board:
                 break
             except ValueError as ve:
                 print(f"{ve.args}, try again")
+
+
+class Marker:
+    """The marker for a particular player """
+
+    def __init__(self, symbol: str):
+        self.symbol = symbol
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        return str(self.symbol)
+
+
+class Game:
+    """An instance of this class represents a single game of Tic-Tac-Toe """
+
+    def __init__(self,board: Board, index=0):
+        self.board = board
+        self.players = board.players
+        self.index = index
+
+
+
+
 
 
 def main():
