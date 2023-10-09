@@ -29,11 +29,11 @@ class Board:
         self.gridSize = 3
         self.grid = [[None for _ in range(self.gridSize)] for _ in range(self.gridSize)]
         self.players = [player1, player2]
-        self.winDescriptions = { 0: "Top Row", 1: "Middle Row",
-                                 2: "Bottom Row", 3: "Left Column",
-                                 4: "Middle Column", 5: "Right Column",
-                                 6: "Diagonal (Top Left to Bottom Right",
-                                 7: "Diagonal (Bottom Left to Upper Right)"
+        self.winDescriptions = { 0: "top row", 1: "middle row",
+                                 2: "bottom row", 3: "left column",
+                                 4: "middle column", 5: "right column",
+                                 6: "diagonal (top left to bottom right",
+                                 7: "diagonal (bottom left to upper right)"
                                 }
 
     def __str__(self):
@@ -165,25 +165,31 @@ class Game:
 def confirm():
     response = False
     confirmRE = re.compile("^([yY]|[yY][eE][sS])$")
-    another = input(f"Would you like to play again?")
+    another = input(f"Would you like to play again? ")
     if confirmRE.match(another) is not None:
         response = True
     return response
+
+def goodbye():
+    print("Thanks for playing!")
+
 
 
 def main():
     player1 = Marker("X")
     player2 = Marker("O")
     gameNum = 0
-    another = False
+    another = True
 
-    while not another:
+    while another:
         game = Game(player1, player2, gameNum)
         game.begin()
         game.alternateTurns()
         another = confirm()
+        if another:
+            gameNum += 1
 
-
+    goodbye()
 
 
 if __name__ == "__main__":
