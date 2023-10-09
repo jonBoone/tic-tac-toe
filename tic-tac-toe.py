@@ -12,8 +12,12 @@ class Marker:
     def __init__(self, symbol: str):
         self.symbol = symbol
 
+    def __repr__(self):
+        return self.__str__()
+
     def __str__(self):
         return str(self.symbol)
+
 
 class Board:
     """ Tic-Tac-Toe Board"""
@@ -38,6 +42,27 @@ class Board:
                 outStr += '\n'
                 outStr += '-----\n'
         return outStr
+
+    def checkWin(self, marker):
+        """check the board to see if anyone has won """
+        win = [f"{marker}", f"{marker}", f"{marker}"]
+        possibleWins = []
+        #rows
+        possibleWins.append([[self.grid[row][col] for col in range(self.gridSize)]
+                             for row in range(self.gridSize)])
+        #cols
+        possibleWins.append([[self.grid[row][col] for row in range(self.gridSize)]
+                             for col in range(self.gridSize)])
+        #diagLtoR
+        possibleWins.append([self.grid[0][0], self.grid[1][1], self.grid[2][2]])
+        #diagRtoL
+        possibleWins.append([self.grid[0][2], self.grid[1][1], self.grid[2][0]])
+        for testCase in range(len(possibleWins)):
+            print(f"possibleWins[{testCase}] == {possibleWins[testCase]}")
+            if win == possibleWins[testCase]:
+                return True
+        return False
+
 
     def set(self, row: int, col: int, marker: Marker):
         """put the marker in the spot unless its already been taken """
@@ -69,6 +94,7 @@ class Board:
         return index >= 0 and index < self.gridSize
 
 
+
 def main():
     player1 = Marker("X")
     player2 = Marker("O")
@@ -76,10 +102,17 @@ def main():
 
     board.recordTurn(player1)
     print(board)
+    if board.checkWin(player1):
+        print(f"{player1.symbol} wins!!!!!")
 
     board.recordTurn(player2)
     print(board)
+    if board.checkWin(player2):
+        print(f"{player2.symbol} wins!!!!!!")
 
 
 if __name__ == "__main__":
     main()
+    myBoard = Board()
+    player1 = Marker("λ")
+    player2 = Marker("𝞴")
