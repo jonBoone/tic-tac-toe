@@ -6,6 +6,7 @@
 # Author: Jon Boone <ipmonger@delamancha.org>
 #
 
+
 class Marker:
     """The marker for a particular player """
 
@@ -46,6 +47,23 @@ class Board:
     def checkWin(self, marker):
         """check the board to see if anyone has won """
         win = [f"{marker}", f"{marker}", f"{marker}"]
+
+        possibleWins = self.generatePossibleWins(marker)
+
+        for testCase in range(len(possibleWins)):
+            print(f"comparing {win} to {possibleWins[testCase]} \
+            (posibleWins{testCase})")
+
+            if self.compare(win, possibleWins[testCase]):
+                return (True, testCase)
+
+        return (False, None)
+
+    def compare(self, win, possibleWin):
+        return win == possibleWin
+
+
+    def generatePossibleWins(self, marker):
         possibleWins = []
         #rows
         [possibleWins.append([self.grid[row][col] for col in range(self.gridSize)])
@@ -57,18 +75,7 @@ class Board:
         possibleWins.append([self.grid[0][0], self.grid[1][1], self.grid[2][2]])
         #diagRtoL
         possibleWins.append([self.grid[0][2], self.grid[1][1], self.grid[2][0]])
-        for testCase in range(len(possibleWins)):
-            print(f"possibleWins[{testCase}] == {possibleWins[testCase]}")
-            if win == possibleWins[testCase]:
-                return True
-        return False
-
-
-    def set(self, row: int, col: int, marker: Marker):
-        """put the marker in the spot unless its already been taken """
-        if not self.grid[row][col] is None:
-            raise ValueError(f"{marker}'s selected spot {row} {col} is already taken")
-        self.grid[row][col] = marker
+        return possibleWins
 
     def recordTurn(self, playerMarker):
         """gather input from the player and add it to the board """
@@ -83,6 +90,12 @@ class Board:
                 break
             except ValueError as ve:
                 print(f"{ve.args}, try again")
+
+    def set(self, row: int, col: int, marker: Marker):
+        """put the marker in the spot unless its already been taken """
+        if not self.grid[row][col] is None:
+            raise ValueError(f"{marker}'s selected spot {row} {col} is already taken")
+        self.grid[row][col] = str(marker)
 
     def validate(self, index):
         """
